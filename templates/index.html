@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Potrero Fútbol 5</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="static\css\index.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">⚽ <span>Potrero</span> Fútbol 5</div>
+      <div style="display: flex; align-items: center; gap: 1rem">
+        <div class="tabs">
+          <button class="tab active" onclick="showPage('home', this)">
+            Inicio
+          </button>
+          <button class="tab" onclick="showPage('reservar', this)">
+            Reservar
+          </button>
+          <button class="tab" onclick="showPage('turnos', this)">Turnos</button>
+          <button class="tab" onclick="showPage('config', this)">
+            Configuración
+          </button>
+        </div>
+        <a href="/logout" class="btn-salir">Salir</a>
+      </div>
+    </header>
+
+    <main>
+      <!-- ════════════ HOME ════════════ -->
+      <div id="page-home" class="page active">
+        <div class="home-header">
+          <div>
+            <div class="home-fecha-dia" id="home-dia"></div>
+            <div class="home-fecha-completa" id="home-fecha-completa"></div>
+          </div>
+          <div>
+            <div class="home-reloj" id="home-reloj">--:--</div>
+            <div class="home-reloj-label">Hora actual</div>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card verde">
+            <div class="stat-value" id="stat-reservados">—</div>
+            <div class="stat-label">Turnos reservados hoy</div>
+          </div>
+          <div class="stat-card rojo">
+            <div class="stat-value" id="stat-libres">—</div>
+            <div class="stat-label">Slots libres hoy</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="stat-value" id="stat-recaudacion">—</div>
+            <div class="stat-label">Recaudación del día</div>
+          </div>
+          <div class="stat-card azul">
+            <div class="stat-value" id="stat-historico">—</div>
+            <div class="stat-label">Turnos totales histórico</div>
+          </div>
+        </div>
+        <div id="home-proximo"></div>
+        <div class="two-col">
+          <div>
+            <div class="card-title">Agenda de hoy</div>
+            <div class="tl-wrap">
+              <table class="tl-table" id="home-timeline">
+                <tr>
+                  <td class="empty-state">Cargando...</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div>
+            <div class="card-title">Turnos de mañana</div>
+            <div id="home-manana">
+              <div class="empty-state">Cargando...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════ RESERVAR ════════════ -->
+      <div id="page-reservar" class="page">
+        <div class="card">
+          <div class="card-title">1 — Elegir fecha y horario</div>
+          <div class="row">
+            <label style="flex: 1; max-width: 200px"
+              >Fecha<input
+                type="date"
+                id="inp-fecha"
+                oninput="consultarDisponibilidad()"
+            /></label>
+          </div>
+          <div id="horario-wrap" class="hidden">
+            <hr class="divider" />
+            <div
+              class="card-title"
+              style="font-size: 0.9rem; margin-bottom: 0.5rem"
+            >
+              Horarios disponibles
+            </div>
+            <div class="horario-grid" id="horario-grid"></div>
+          </div>
+        </div>
+
+        <div id="paso-cancha" class="card hidden">
+          <div class="card-title">2 — Elegir cancha</div>
+          <div id="turno-hora-info" class="alert alert-info"></div>
+          <div class="cancha-picker" id="cancha-picker"></div>
+        </div>
+
+        <div id="paso2" class="card hidden">
+          <div class="card-title">3 — Datos del cliente</div>
+          <div class="row" style="margin-bottom: 0.75rem">
+            <label style="flex: 1; max-width: 220px"
+              >Teléfono (buscar cliente)<input
+                type="tel"
+                id="inp-tel"
+                placeholder="Ej: 3412345678"
+                oninput="buscarCliente()"
+            /></label>
+          </div>
+          <div id="cliente-encontrado" class="alert alert-success hidden"></div>
+          <div id="campos-nuevocliente">
+            <div class="form-grid">
+              <label
+                >Nombre<input type="text" id="inp-nombre" placeholder="Juan"
+              /></label>
+              <label
+                >Apellido<input
+                  type="text"
+                  id="inp-apellido"
+                  placeholder="García"
+              /></label>
+            </div>
+          </div>
+          <hr class="divider" />
+          <div class="form-grid" style="grid-template-columns: 180px 1fr">
+            <label
+              >Precio del turno<input
+                type="number"
+                id="inp-precio"
+                placeholder="Ej: 15000"
+                min="0"
+                step="100"
+              /><span class="precio-hint"
+                >Puede variar según inflación</span
+              ></label
+            >
+            <div></div>
+          </div>
+          <div
+            id="turno-seleccionado-info"
+            class="alert alert-info"
+            style="margin-top: 0.5rem"
+          ></div>
+          <div id="msg-reserva" class="hidden"></div>
+          <div
+            style="
+              margin-top: 1rem;
+              display: flex;
+              gap: 0.75rem;
+              flex-wrap: wrap;
+            "
+          >
+            <button class="btn btn-primary" onclick="confirmarTurno()">
+              ✓ Confirmar turno
+            </button>
+            <button class="btn btn-secondary" onclick="cancelarReserva()">
+              Cancelar
+            </button>
+          </div>
+        </div>
+
+        <div id="resultado-reserva" class="hidden"></div>
+      </div>
+
+      <!-- ════════════ TURNOS ════════════ -->
+      <div id="page-turnos" class="page">
+        <div class="card">
+          <div class="card-title">Filtrar turnos</div>
+          <div class="row">
+            <label
+              >Fecha<input
+                type="date"
+                id="filtro-fecha"
+                oninput="cargarTurnos()"
+            /></label>
+            <label
+              >Nombre / Apellido<input
+                type="text"
+                id="filtro-nombre"
+                placeholder="Buscar..."
+                oninput="cargarTurnos()"
+            /></label>
+            <label
+              >Teléfono<input
+                type="tel"
+                id="filtro-tel"
+                placeholder="..."
+                oninput="cargarTurnos()"
+            /></label>
+            <label
+              >Cancha<select id="filtro-cancha" onchange="cargarTurnos()">
+                <option value="">Todas</option>
+              </select></label
+            >
+            <button class="btn btn-secondary" onclick="limpiarFiltros()">
+              Limpiar
+            </button>
+          </div>
+        </div>
+        <div id="turnos-container">
+          <div class="empty-state">
+            Seleccioná una fecha o buscá un cliente.
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════ CONFIGURACIÓN ════════════ -->
+      <div id="page-config" class="page">
+        <div class="card config-section">
+          <div class="card-title">Canchas del complejo</div>
+          <p
+            style="
+              font-size: 0.85rem;
+              color: var(--muted);
+              margin-bottom: 1.25rem;
+            "
+          >
+            Cada cancha acepta un turno por hora. Con múltiples canchas podés
+            tener el mismo horario reservado en canchas distintas.
+          </p>
+          <div class="cancha-list" id="config-cancha-list"></div>
+          <div id="config-msg" class="hidden"></div>
+          <hr class="divider" />
+          <div class="nueva-cancha-form">
+            <label style="flex: 1; max-width: 280px"
+              >Nueva cancha<input
+                type="text"
+                id="inp-nueva-cancha"
+                placeholder="Ej: Cancha 2 / Cancha VIP"
+            /></label>
+            <button class="btn btn-primary" onclick="crearCancha()">
+              + Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="static/js/index.js" defer></script>
+  </body>
+</html>

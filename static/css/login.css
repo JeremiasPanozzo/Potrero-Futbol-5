@@ -1,0 +1,205 @@
+:root {
+  --green: #22c55e;
+  --green-d: #16a34a;
+  --green-dk: #0f7238;
+  --bg: #0a0f0a;
+  --bg2: #111811;
+  --bg3: #182218;
+  --card: #1a271a;
+  --border: #2a3d2a;
+  --text: #e8f0e8;
+  --muted: #8aad8a;
+  --red: #f87171;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Barlow", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+/* Campo de césped decorativo */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 60px,
+      rgba(34, 197, 94, 0.025) 60px,
+      rgba(34, 197, 94, 0.025) 61px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 60px,
+      rgba(34, 197, 94, 0.025) 60px,
+      rgba(34, 197, 94, 0.025) 61px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.login-wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 380px;
+}
+
+/* Logo */
+.logo {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.logo-icon {
+  font-size: 3rem;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.logo-title {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 1px;
+  line-height: 1;
+}
+.logo-sub {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 0.25rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Card */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 2rem;
+}
+.card-title {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Inputs */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+.input-wrap {
+  position: relative;
+}
+.input-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 0.65rem 0.75rem 0.65rem 2.25rem;
+  font-size: 0.9rem;
+  font-family: "Barlow", sans-serif;
+  outline: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+input:focus {
+  border-color: var(--green-d);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+}
+input::placeholder {
+  color: var(--muted);
+  opacity: 0.5;
+}
+
+/* Error */
+.error-msg {
+  background: #1f1010;
+  border: 1px solid #4a2020;
+  border-radius: 8px;
+  color: var(--red);
+  font-size: 0.83rem;
+  padding: 0.6rem 0.85rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Botón */
+.btn-login {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--green-d);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: "Barlow", sans-serif;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    transform 0.1s;
+  margin-top: 0.25rem;
+  letter-spacing: 0.3px;
+}
+.btn-login:hover {
+  background: var(--green-dk);
+}
+.btn-login:active {
+  transform: scale(0.98);
+}
+
+/* Footer */
+.footer-note {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 1.5rem;
+  opacity: 0.6;
+}
