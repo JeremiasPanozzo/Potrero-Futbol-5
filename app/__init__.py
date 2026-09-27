@@ -1,8 +1,16 @@
 
+import mimetypes
+
 from flask import Flask, jsonify
 from .config import Config
 from .database import init_db
 from .errors import AppError
+
+# En Windows, mimetypes lee el registro y a veces sirve .js como text/plain,
+# lo que rompe los <script type="module"> del frontend. Lo fijamos acá.
+mimetypes.add_type("application/javascript", ".js")
+mimetypes.add_type("text/css", ".css")
+
 
 def create_app(config_class=Config):
     app = Flask(__name__)

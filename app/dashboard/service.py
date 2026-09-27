@@ -43,6 +43,7 @@ def obtener_dashboard():
         "recaudacion_hoy": recaudacion,
         "proximo": proximo,
         "hora_actual": hora_actual,
+        "horarios": Config.HORARIOS,
         "total_slots": total_slots,
         "total_historico": total_historico,
     }
