@@ -1,0 +1,106 @@
+/* ═══════════════════════════════════════════════════════════════
+   Base compartida: tokens de diseño, reset y utilidades.
+   La usan tanto el login como la app.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Marca */
+  --green: #22c55e;
+  --green-d: #16a34a;
+  --green-dk: #0f7238;
+  --green-bg: #0d2a15;
+  --green-bg-hover: #0f3a1a;
+
+  /* Estados */
+  --red: #ef4444;
+  --red-soft: #f87171;
+  --red-bg: #1f1010;
+  --red-bg-hover: #2a0f0f;
+  --red-border: #4a2020;
+  --red-border-soft: #3a2020;
+  --red-muted: #a05050;
+  --amber-soft: #fbbf24;
+  --amber-bg: #1f1500;
+  --amber-border: #4a3300;
+  --blue: #38bdf8;
+  --info: #7ec8f0;
+  --info-bg: #0d1e2a;
+  --info-bg-hover: #122a40;
+  --info-border: #1e4060;
+
+  /* Superficies y texto */
+  --bg: #0a0f0a;
+  --bg2: #111811;
+  --bg3: #182218;
+  --card: #1a271a;
+  --border: #2a3d2a;
+  --border-soft: #1a2a1a;
+  --text: #e8f0e8;
+  --muted: #8aad8a;
+  --faint: #3a5a3a;
+  --fainter: #2e4a2e;
+
+  /* Tipografía y forma */
+  --font-body: "Barlow", system-ui, sans-serif;
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --ease: 0.15s;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Foco visible para navegación con teclado */
+:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+input:focus-visible,
+select:focus-visible {
+  outline: none; /* los campos ya marcan el foco con el borde */
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

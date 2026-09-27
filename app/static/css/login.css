@@ -1,30 +1,6 @@
-:root {
-  --green: #22c55e;
-  --green-d: #16a34a;
-  --green-dk: #0f7238;
-  --bg: #0a0f0a;
-  --bg2: #111811;
-  --bg3: #182218;
-  --card: #1a271a;
-  --border: #2a3d2a;
-  --text: #e8f0e8;
-  --muted: #8aad8a;
-  --red: #f87171;
-}
+/* Pantalla de login. Tokens y reset en base.css */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: "Barlow", sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
+.login-page {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -33,7 +9,7 @@ body {
 }
 
 /* Campo de césped decorativo */
-body::before {
+.login-page::before {
   content: "";
   position: fixed;
   inset: 0;
@@ -69,25 +45,23 @@ body::before {
   margin-bottom: 2rem;
 }
 .logo-icon {
+  display: block;
   font-size: 3rem;
   line-height: 1;
   margin-bottom: 0.5rem;
-  display: block;
 }
-
 .logo-title {
-  font-family: "Barlow Condensed", sans-serif;
+  font-family: var(--font-display);
   font-size: 2rem;
-  font-weight: 650;
+  font-weight: 700;
   color: var(--green);
   letter-spacing: 1px;
-  line-height: 1;
+  line-height: 1.05;
 }
-
 .logo-sub {
   font-size: 0.82rem;
   color: var(--muted);
-  margin-top: 0.25rem;
+  margin-top: 0.35rem;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
@@ -100,7 +74,7 @@ body::before {
   padding: 2rem;
 }
 .card-title {
-  font-family: "Barlow Condensed", sans-serif;
+  font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 600;
   color: var(--muted);
@@ -110,14 +84,14 @@ body::before {
   text-align: center;
 }
 
-/* Inputs */
+/* Campos */
 .field {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
   margin-bottom: 1rem;
 }
-label {
+.field label {
   font-size: 0.8rem;
   color: var(--muted);
   font-weight: 500;
@@ -135,60 +109,57 @@ label {
   font-size: 0.95rem;
   pointer-events: none;
 }
-input {
+.input-wrap input {
   width: 100%;
   background: var(--bg3);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
+  border-radius: var(--radius-md);
   padding: 0.65rem 0.75rem 0.65rem 2.25rem;
   font-size: 0.9rem;
-  font-family: "Barlow", sans-serif;
   outline: none;
   transition:
-    border-color 0.15s,
-    box-shadow 0.15s;
+    border-color var(--ease),
+    box-shadow var(--ease);
 }
-input:focus {
+.input-wrap input:focus {
   border-color: var(--green-d);
   box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
 }
-input::placeholder {
+.input-wrap input::placeholder {
   color: var(--muted);
   opacity: 0.5;
 }
 
 /* Error */
 .error-msg {
-  background: #1f1010;
-  border: 1px solid #4a2020;
-  border-radius: 8px;
-  color: var(--red);
-  font-size: 0.83rem;
-  padding: 0.6rem 0.85rem;
-  margin-bottom: 1rem;
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  background: var(--red-bg);
+  border: 1px solid var(--red-border);
+  border-radius: var(--radius-md);
+  color: var(--red-soft);
+  font-size: 0.83rem;
+  padding: 0.6rem 0.85rem;
+  margin-bottom: 1rem;
 }
 
 /* Botón */
 .btn-login {
   width: 100%;
+  margin-top: 0.25rem;
   padding: 0.75rem;
   background: var(--green-d);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 0.95rem;
   font-weight: 600;
-  font-family: "Barlow", sans-serif;
+  letter-spacing: 0.3px;
   cursor: pointer;
   transition:
-    background 0.15s,
+    background var(--ease),
     transform 0.1s;
-  margin-top: 0.25rem;
-  letter-spacing: 0.3px;
 }
 .btn-login:hover {
   background: var(--green-dk);
