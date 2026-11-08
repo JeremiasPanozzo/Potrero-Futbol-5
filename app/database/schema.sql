@@ -22,7 +22,6 @@ hora TEXT NOT NULL,
 precio REAL NOT NULL,
 creado_en TEXT NOT NULL DEFAULT (datetime('now', '-3 hours')), -- hora de Buenos Aires (UTC-3)
 
-```
 FOREIGN KEY (cliente_id)
     REFERENCES clientes(id)
     ON DELETE RESTRICT,
@@ -32,8 +31,6 @@ FOREIGN KEY (cancha_id)
     ON DELETE RESTRICT,
 
 UNIQUE(fecha, hora, cancha_id)
-```
-
 );
 
 CREATE INDEX IF NOT EXISTS idx_turnos_fecha

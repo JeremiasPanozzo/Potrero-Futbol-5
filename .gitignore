@@ -12,3 +12,5 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+# Respaldos automáticos de migraciones de la base
+*.antes-migracion-*.db
