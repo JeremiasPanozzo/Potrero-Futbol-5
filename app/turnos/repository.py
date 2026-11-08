@@ -1,4 +1,5 @@
 from app.database import get_db
+from app.tiempo import timestamp_ahora
 
 TURNO_SELECT = """
     SELECT
@@ -74,10 +75,10 @@ def create(cliente_id, cancha_id, fecha, hora, precio, db=None):
         cursor = db.execute(
             """
             INSERT INTO turnos
-                (cliente_id, cancha_id, fecha, hora, precio)
-            VALUES (?, ?, ?, ?, ?)
+                (cliente_id, cancha_id, fecha, hora, precio, creado_en)
+            VALUES (?, ?, ?, ?, ?, ?)
             """,
-            (cliente_id, cancha_id, fecha, hora, precio)
+            (cliente_id, cancha_id, fecha, hora, precio, timestamp_ahora())
         )
         if owns_connection:
             db.commit()

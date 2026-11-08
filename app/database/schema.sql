@@ -20,7 +20,7 @@ cancha_id INTEGER NOT NULL,
 fecha TEXT NOT NULL,
 hora TEXT NOT NULL,
 precio REAL NOT NULL,
-creado_en TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+creado_en TEXT NOT NULL DEFAULT (datetime('now', '-3 hours')), -- hora de Buenos Aires (UTC-3)
 
 ```
 FOREIGN KEY (cliente_id)
