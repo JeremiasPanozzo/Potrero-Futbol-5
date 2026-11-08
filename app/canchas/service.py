@@ -1,5 +1,5 @@
 
-from datetime import datetime
+from app.tiempo import ahora
 from app.errors import (ConflictError, NotFoundError, ValidationError,)
 from . import repository
 
@@ -60,7 +60,7 @@ def editar_cancha(cancha_id, data):
 
     if activa is not None:
         if not activa:
-            hoy = datetime.now().strftime("%Y-%m-%d")
+            hoy = ahora().strftime("%Y-%m-%d")
             futuros = repository.count_future_turnos(cancha_id, hoy)
             if futuros > 0:
                 raise ConflictError(

@@ -1,0 +1,4 @@
+Flask>=3.0
+python-dotenv>=1.0
+# Base de zonas horarias (necesaria en Windows para America/Argentina/Buenos_Aires)
+tzdata

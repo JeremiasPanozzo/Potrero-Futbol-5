@@ -1,6 +1,7 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from app.config import Config
 from app.database import get_db
+from app.tiempo import ahora as ahora_ba
 from app.canchas import repository as canchas_repository   # ← esta línea
 from app.turnos.service import (
 contar_turnos_historicos,
@@ -10,7 +11,7 @@ obtener_turnos_del_dia,
 
 def obtener_dashboard():
 
-    ahora = datetime.now()
+    ahora = ahora_ba()
     hoy = ahora.strftime("%Y-%m-%d")
     manana = (ahora + timedelta(days=1)).strftime("%Y-%m-%d")
     hora_actual = ahora.strftime("%H:%M")
