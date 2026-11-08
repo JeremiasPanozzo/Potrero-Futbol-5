@@ -32,3 +32,11 @@ def ahora():
 def timestamp_ahora():
     """Fecha y hora actual en Buenos Aires como texto 'YYYY-MM-DD HH:MM:SS'."""
     return ahora().strftime(FORMATO_TIMESTAMP)
+
+
+def ya_paso(fecha, hora):
+    """True si el turno de esa fecha ('YYYY-MM-DD') y hora ('HH:MM') ya empezó.
+
+    Un turno que empieza en el minuto actual también cuenta como pasado.
+    """
+    return f"{fecha} {hora}" <= ahora().strftime("%Y-%m-%d %H:%M")

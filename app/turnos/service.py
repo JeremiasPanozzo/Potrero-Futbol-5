@@ -1,8 +1,10 @@
+import re
 from datetime import datetime
 from app.database import get_db
 from app.errors import (ConflictError, NotFoundError, ValidationError)
 from app.canchas import repository as canchas_repository
 from app.clientes import service as clientes_service
+from app.tiempo import ya_paso
 from . import repository
 
 def _validar_fecha(fecha):
@@ -41,6 +43,12 @@ def _validar_datos(data):
         )
 
     _validar_fecha(fecha)
+
+    if not re.fullmatch(r"\d{2}:\d{2}", str(hora)):
+        raise ValidationError("La hora debe tener formato HH:MM")
+
+    if ya_paso(fecha, hora):
+        raise ValidationError("No se puede reservar un horario que ya pasó")
 
     precio = _validar_precio(precio)
 

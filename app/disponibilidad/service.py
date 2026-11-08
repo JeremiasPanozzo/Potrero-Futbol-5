@@ -1,5 +1,6 @@
 from app.database import get_db
 from app.config import Config
+from app.tiempo import ahora, ya_paso
 from app.canchas.repository import find_active
 from app.turnos.repository import (
 find_by_fecha,
@@ -24,10 +25,11 @@ def obtener_disponibilidad(fecha):
     resultado = []
 
     for hora in Config.HORARIOS:
+        pasado = ya_paso(fecha, hora)
         slots_canchas = []
         for cancha in canchas:
 
-            disponible = (
+            disponible = not pasado and (
                 hora,
                 cancha["id"]
             ) not in ocupados
@@ -46,6 +48,7 @@ def obtener_disponibilidad(fecha):
         resultado.append({
             "hora": hora,
             "disponible": alguna_libre,
+            "pasado": pasado,
             "canchas": slots_canchas,
         })
 
@@ -67,9 +70,9 @@ def proximos_disponibles(fecha, hora):
     if cantidad_canchas == 0:
         return []
 
-    fecha_dt = datetime.strptime(
-        fecha,
-        "%Y-%m-%d"
+    fecha_dt = max(
+        datetime.strptime(fecha, "%Y-%m-%d").date(),
+        ahora().date(),
     )
 
     sugerencias = []
@@ -93,6 +96,9 @@ def proximos_disponibles(fecha, hora):
 
         for horario in Config.HORARIOS:
             if (fecha_actual == fecha and horario <= hora):
+                continue
+
+            if ya_paso(fecha_actual, horario):
                 continue
 
             if (ocupadas.get(horario, 0) < cantidad_canchas):

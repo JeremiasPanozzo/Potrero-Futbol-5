@@ -414,6 +414,12 @@
   opacity: 0.65;
   cursor: not-allowed;
 }
+.slot.pasado {
+  background: transparent;
+  border: 1px dashed var(--border);
+  color: var(--faint);
+  cursor: not-allowed;
+}
 .slot.seleccionado,
 .slot.seleccionado:hover {
   background: var(--green-d);
