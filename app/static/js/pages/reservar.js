@@ -19,6 +19,7 @@ const MIN_DIGITOS_TELEFONO = 8;
 const estado = {
   fecha: null,
   slots: new Map(), // hora → [{ cancha_id, cancha_nombre, disponible }]
+  pasados: new Set(), // horas de la fecha elegida que ya empezaron
   hora: null,
   cancha: null,
   cliente: null, // cliente existente encontrado por teléfono
@@ -27,6 +28,10 @@ const estado = {
 let el = {};
 
 // ── Paso 1: fecha y horario ──────────────────────────────────────
+
+// "en-CA" da el formato YYYY-MM-DD que usa <input type="date">.
+const hoyEnBuenosAires = () =>
+  new Date().toLocaleDateString("en-CA", { timeZone: "America/Argentina/Buenos_Aires" });
 
 const pedirDisponibilidad = soloUltima((signal, fecha) =>
   api.disponibilidad.porFecha(fecha, { signal }),
@@ -37,14 +42,17 @@ function renderHorarios() {
   render(
     el.grid,
     slots.map(([hora, canchas]) => {
+      const pasado = estado.pasados.has(hora);
       const libres = canchas.filter((c) => c.disponible).length;
       const disponible = libres > 0;
       const seleccionado = hora === estado.hora;
+      const clase = pasado ? "pasado" : disponible ? "libre" : "ocupado";
       return html`<button
         type="button"
-        class="slot ${disponible ? "libre" : "ocupado"} ${seleccionado ? "seleccionado" : ""}"
+        class="slot ${clase} ${seleccionado ? "seleccionado" : ""}"
         data-hora="${hora}"
         aria-pressed="${String(seleccionado)}"
+        title="${pasado ? "Este horario ya pasó" : ""}"
         ${disponible ? "" : html`disabled`}
       >
         ${hora}
@@ -63,6 +71,7 @@ async function cargarHorarios(fecha) {
     const data = await pedirDisponibilidad(fecha);
     estado.fecha = fecha;
     estado.slots = new Map(data.slots.map((s) => [s.hora, s.canchas]));
+    estado.pasados = new Set(data.slots.filter((s) => s.pasado).map((s) => s.hora));
     renderHorarios();
     return true;
   } catch (error) {
@@ -323,6 +332,8 @@ export function init() {
     resultado: byId("resultado-reserva"),
   };
 
+  // No se pueden elegir fechas anteriores a hoy (en Buenos Aires).
+  el.fecha.min = hoyEnBuenosAires();
   el.fecha.addEventListener("change", alCambiarFecha);
   delegar(el.grid, "click", ".slot.libre", (_, btn) => seleccionarHora(btn.dataset.hora));
   delegar(el.canchaPicker, "click", ".cancha-btn:not(:disabled)", (_, btn) =>
@@ -338,6 +349,7 @@ export function init() {
 }
 
 export function mount() {
+  el.fecha.min = hoyEnBuenosAires(); // por si la app quedó abierta desde ayer
   // Si ya hay una fecha elegida, refrescamos por si cambió algo en otra pestaña.
   if (estado.fecha) cargarHorarios(estado.fecha);
 }
