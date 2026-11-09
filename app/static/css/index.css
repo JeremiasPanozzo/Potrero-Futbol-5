@@ -317,13 +317,15 @@
 }
 .tl-slot-ocupado {
   padding: 0.3rem 0.6rem;
-  background: var(--bg3);
-  border: 1px solid var(--green-dk);
+  background: color-mix(in srgb, var(--cancha, var(--green)) 10%, var(--bg3));
+  border: 1px solid color-mix(in srgb, var(--cancha, var(--green)) 40%, transparent);
+  border-left: 3px solid var(--cancha, var(--green-dk));
   border-radius: var(--radius-sm);
   font-size: 0.82rem;
 }
 .tl-slot-ocupado.pasado {
   border-color: var(--border);
+  border-left-color: var(--cancha, var(--border));
   opacity: 0.5;
 }
 .tl-slot-nombre {
@@ -367,16 +369,42 @@
   font-weight: 500;
 }
 
-/* Etiqueta de cancha (mañana y listado de turnos) */
-.manana-cancha,
-.t-cancha {
-  padding: 0.1rem 0.4rem;
-  background: var(--bg2);
-  border: 1px solid var(--border);
+/* ── COLORES POR CANCHA ──
+   Cada elemento recibe una clase .cancha-cN que define --cancha;
+   los componentes de abajo la usan para teñirse. */
+.cancha-c0 { --cancha: var(--cancha-0); }
+.cancha-c1 { --cancha: var(--cancha-1); }
+.cancha-c2 { --cancha: var(--cancha-2); }
+.cancha-c3 { --cancha: var(--cancha-3); }
+.cancha-c4 { --cancha: var(--cancha-4); }
+.cancha-c5 { --cancha: var(--cancha-5); }
+
+/* Punto de color junto al nombre */
+.cancha-dot {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-right: 0.45rem;
+  border-radius: 50%;
+  background: var(--cancha, var(--muted));
+  vertical-align: 0.05em;
+}
+
+/* Etiqueta con el nombre de la cancha */
+.cancha-tag {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  background: color-mix(in srgb, var(--cancha, var(--muted)) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cancha, var(--muted)) 45%, transparent);
   border-radius: 4px;
+  color: var(--cancha, var(--muted));
   font-size: 0.75rem;
-  color: var(--muted);
+  font-weight: 600;
   white-space: nowrap;
+}
+.cancha-texto {
+  color: var(--cancha);
 }
 
 /* ── RESERVAR: SLOT GRID ── */
@@ -455,12 +483,12 @@
     background var(--ease);
 }
 .cancha-btn:hover {
-  border-color: var(--green-dk);
+  border-color: color-mix(in srgb, var(--cancha, var(--green)) 60%, transparent);
   color: var(--text);
 }
 .cancha-btn.selected {
-  background: var(--green-d);
-  border-color: var(--green);
+  background: color-mix(in srgb, var(--cancha, var(--green)) 22%, var(--bg3));
+  border-color: var(--cancha, var(--green));
   color: #fff;
 }
 .cancha-btn.ocupada {
@@ -520,6 +548,8 @@
   color: var(--green);
 }
 .t-cancha {
+  justify-self: start;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -558,6 +588,9 @@
   background: var(--bg3);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
+}
+.cancha-item .cancha-dot {
+  margin-right: -0.5rem; /* compensa el gap del contenedor */
 }
 .cancha-item.inactiva {
   opacity: 0.5;

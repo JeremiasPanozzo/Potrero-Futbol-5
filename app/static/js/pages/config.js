@@ -1,4 +1,5 @@
 import { api } from "../api.js";
+import { claseCancha } from "../utils/canchas.js";
 import { byId, conBotonOcupado, delegar, html, mostrarAlerta, render } from "../utils/dom.js";
 
 let el = {};
@@ -22,7 +23,8 @@ function renderCanchas(canchas) {
   render(
     el.lista,
     canchas.map(
-      (c) => html`<li class="cancha-item ${c.activa ? "" : "inactiva"}" data-id="${c.id}">
+      (c) => html`<li class="cancha-item ${claseCancha(c.id)} ${c.activa ? "" : "inactiva"}" data-id="${c.id}">
+        <span class="cancha-dot" aria-hidden="true"></span>
         <input
           class="cancha-nombre-edit"
           value="${c.nombre}"

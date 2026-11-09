@@ -1,5 +1,6 @@
 import { api } from "../api.js";
 import { byId, html, notificar, render } from "../utils/dom.js";
+import { claseCancha } from "../utils/canchas.js";
 import { capitalizar, formatHora, formatPrecio, FORMATO_FECHA } from "../utils/format.js";
 
 let relojId = null;
@@ -30,7 +31,7 @@ function renderProximo(proximo) {
             <div class="proximo-label">Próximo turno</div>
             <div class="proximo-hora">${proximo.hora} hs</div>
             <div class="proximo-cliente">${proximo.nombre} ${proximo.apellido}</div>
-            <div class="proximo-det">${proximo.telefono} · ${proximo.cancha_nombre}</div>
+            <div class="proximo-det">${proximo.telefono} · <span class="cancha-tag ${claseCancha(proximo.cancha_id)}">${proximo.cancha_nombre}</span></div>
           </div>
           <div class="proximo-badge">⚽ En cancha pronto</div>
         </div>`
@@ -45,7 +46,7 @@ function celdaTimeline(turno, pasado) {
     return html`<td><div class="tl-slot-libre">${pasado ? "" : "Libre"}</div></td>`;
   }
   return html`<td>
-    <div class="tl-slot-ocupado ${pasado ? "pasado" : ""}">
+    <div class="tl-slot-ocupado ${claseCancha(turno.cancha_id)} ${pasado ? "pasado" : ""}">
       <div class="tl-slot-nombre" title="${turno.nombre} ${turno.apellido}">
         ${turno.nombre} ${turno.apellido}
       </div>
@@ -75,7 +76,7 @@ function renderTimeline({ canchas, turnos_hoy, hora_actual, horarios }) {
   render(
     el.timeline,
     html`<thead>
-        <tr><th scope="col">Hora</th>${canchas.map((c) => html`<th scope="col">${c.nombre}</th>`)}</tr>
+        <tr><th scope="col">Hora</th>${canchas.map((c) => html`<th scope="col"><span class="cancha-dot ${claseCancha(c.id)}"></span>${c.nombre}</th>`)}</tr>
       </thead>
       <tbody>${filas}</tbody>`,
   );
@@ -92,7 +93,7 @@ function renderManana(turnos) {
       ${turnos.map(
         (t) => html`<li class="manana-row">
           <span class="manana-hora">${t.hora}</span>
-          <span class="manana-cancha">${t.cancha_nombre}</span>
+          <span class="manana-cancha cancha-tag ${claseCancha(t.cancha_id)}">${t.cancha_nombre}</span>
           <span class="manana-nombre">${t.nombre} ${t.apellido}</span>
         </li>`,
       )}
