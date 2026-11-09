@@ -11,6 +11,7 @@ import {
   ocultar,
   render,
 } from "../utils/dom.js";
+import { claseCancha } from "../utils/canchas.js";
 import { debounce, formatFecha, formatPrecio, FORMATO_FECHA, sumarHoras } from "../utils/format.js";
 
 const MIN_DIGITOS_TELEFONO = 8;
@@ -110,12 +111,12 @@ function seleccionarHora(hora) {
     canchas.map(
       (c) => html`<button
         type="button"
-        class="cancha-btn ${c.disponible ? "" : "ocupada"}"
+        class="cancha-btn ${claseCancha(c.cancha_id)} ${c.disponible ? "" : "ocupada"}"
         data-cancha-id="${c.cancha_id}"
         aria-pressed="false"
         ${c.disponible ? "" : html`disabled`}
       >
-        ${c.cancha_nombre}
+        <span class="cancha-dot"></span>${c.cancha_nombre}
       </button>`,
     ),
   );
@@ -139,7 +140,7 @@ function seleccionarCancha(canchaId) {
   render(
     el.turnoInfo,
     html`<strong>Turno:</strong> ${formatFecha(estado.fecha)} · ${estado.hora} hs ·
-      <strong>${cancha.cancha_nombre}</strong>`,
+      <strong class="cancha-texto ${claseCancha(cancha.cancha_id)}">${cancha.cancha_nombre}</strong>`,
   );
 
   el.formCliente.reset();
@@ -243,7 +244,7 @@ function mostrarConfirmacion(t) {
         <dl class="resumen">
           <dt>Cliente</dt><dd>${t.nombre} ${t.apellido}</dd>
           <dt>Teléfono</dt><dd>${t.telefono}</dd>
-          <dt>Cancha</dt><dd>${t.cancha_nombre}</dd>
+          <dt>Cancha</dt><dd><span class="cancha-tag ${claseCancha(t.cancha_id)}">${t.cancha_nombre}</span></dd>
           <dt>Fecha</dt><dd>${formatFecha(t.fecha, FORMATO_FECHA.largoConAnio)}</dd>
           <dt>Horario</dt><dd>${t.hora} a ${sumarHoras(t.hora)} hs</dd>
           <dt>Precio</dt><dd>${formatPrecio(t.precio)}</dd>

@@ -28,6 +28,15 @@
   --info-bg-hover: #122a40;
   --info-border: #1e4060;
 
+  /* Colores por cancha (se asignan por id, ver js/utils/canchas.js).
+     Elegidos para distinguirse entre sí y del rojo de "ocupado". */
+  --cancha-0: #22c55e; /* verde */
+  --cancha-1: #38bdf8; /* celeste */
+  --cancha-2: #fbbf24; /* dorado */
+  --cancha-3: #a78bfa; /* violeta */
+  --cancha-4: #f472b6; /* rosa */
+  --cancha-5: #fb923c; /* naranja */
+
   /* Superficies y texto */
   --bg: #0a0f0a;
   --bg2: #111811;

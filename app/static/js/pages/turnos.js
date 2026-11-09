@@ -1,5 +1,6 @@
 import { api, esCancelacion, soloUltima } from "../api.js";
 import { byId, delegar, html, notificar, render } from "../utils/dom.js";
+import { claseCancha } from "../utils/canchas.js";
 import { debounce, formatFecha, formatPrecio, FORMATO_FECHA } from "../utils/format.js";
 
 let el = {};
@@ -42,7 +43,7 @@ function renderTurnos(turnos) {
           (t) => html`<li class="turno-row">
             <span class="t-fecha">${formatFecha(t.fecha, FORMATO_FECHA.tabla)}</span>
             <span class="t-hora">${t.hora}</span>
-            <span class="t-cancha" title="${t.cancha_nombre}">${t.cancha_nombre}</span>
+            <span class="t-cancha cancha-tag ${claseCancha(t.cancha_id)}" title="${t.cancha_nombre}">${t.cancha_nombre}</span>
             <span class="t-cliente">${t.nombre} ${t.apellido}</span>
             <span class="t-tel">${t.telefono}</span>
             <span class="t-precio">${formatPrecio(t.precio)}</span>
