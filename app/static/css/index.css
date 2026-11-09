@@ -278,7 +278,6 @@
 .tl-ahora {
   position: absolute;
   left: 0;
-  right: 0;
   z-index: 1; /* por debajo de las tarjetas de turnos */
   height: 2px;
   background: var(--green);

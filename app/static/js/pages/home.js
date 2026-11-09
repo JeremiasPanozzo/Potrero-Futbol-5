@@ -132,6 +132,8 @@ function posicionarLineaAhora() {
   const wrap = el.lineaAhora.parentElement.getBoundingClientRect();
   const caja = fila.getBoundingClientRect();
   el.lineaAhora.style.top = `${caja.top - wrap.top + fraccion * caja.height}px`;
+  // Mismo ancho que la tabla, para que acompañe el desplazamiento lateral en celulares.
+  el.lineaAhora.style.width = `${el.timeline.offsetWidth}px`;
   mostrar(el.lineaAhora);
 }
 
