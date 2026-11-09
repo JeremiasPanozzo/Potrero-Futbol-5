@@ -1,5 +1,5 @@
 import { api } from "../api.js";
-import { byId, html, notificar, render } from "../utils/dom.js";
+import { byId, html, mostrar, notificar, ocultar, render } from "../utils/dom.js";
 import { claseCancha } from "../utils/canchas.js";
 import { capitalizar, formatHora, formatPrecio, FORMATO_FECHA } from "../utils/format.js";
 
@@ -9,6 +9,9 @@ let el = {};
 function actualizarReloj() {
   const ahora = new Date();
   el.reloj.textContent = formatHora(ahora);
+  // Cada minuto nuevo se recalcula la agenda (qué pasó, qué está en juego).
+  if (agenda && ahora.getMinutes() !== ultimoMinuto) renderTimeline();
+  ultimoMinuto = ahora.getMinutes();
   el.dia.textContent = capitalizar(ahora.toLocaleDateString("es-AR", { weekday: "long" }));
   el.fecha.textContent = ahora
     .toLocaleDateString("es-AR", FORMATO_FECHA.completa)
@@ -41,12 +44,36 @@ function renderProximo(proximo) {
   );
 }
 
-function celdaTimeline(turno, pasado) {
+// ── Agenda de hoy con línea de "ahora" ──────────────────────────
+
+const DURACION_TURNO = 60; // minutos
+const aMinutos = (hora) => {
+  const [hh, mm] = hora.split(":").map(Number);
+  return hh * 60 + mm;
+};
+const minutosAhora = () => {
+  const d = new Date();
+  return d.getHours() * 60 + d.getMinutes();
+};
+
+/** "pasado" (terminó), "en-juego" (se está jugando), "futuro". */
+function estadoHorario(hora, ahora) {
+  const inicio = aMinutos(hora);
+  if (ahora >= inicio + DURACION_TURNO) return "pasado";
+  if (ahora >= inicio) return "en-juego";
+  return "futuro";
+}
+
+const ETIQUETAS = { "en-juego": "En juego", proximo: "Sigue" };
+
+function celdaTimeline(turno, estado) {
   if (!turno) {
-    return html`<td><div class="tl-slot-libre">${pasado ? "" : "Libre"}</div></td>`;
+    return html`<td><div class="tl-slot-libre">${estado === "pasado" ? "" : "Libre"}</div></td>`;
   }
+  const etiqueta = ETIQUETAS[estado];
   return html`<td>
-    <div class="tl-slot-ocupado ${claseCancha(turno.cancha_id)} ${pasado ? "pasado" : ""}">
+    <div class="tl-slot-ocupado ${claseCancha(turno.cancha_id)} ${estado}">
+      ${etiqueta ? html`<span class="tl-badge">${etiqueta}</span>` : ""}
       <div class="tl-slot-nombre" title="${turno.nombre} ${turno.apellido}">
         ${turno.nombre} ${turno.apellido}
       </div>
@@ -55,21 +82,28 @@ function celdaTimeline(turno, pasado) {
   </td>`;
 }
 
-function renderTimeline({ canchas, turnos_hoy, hora_actual, horarios }) {
+let agenda = null; // último { canchas, turnos_hoy, horarios } recibido
+let ultimoMinuto = null;
+
+function renderTimeline() {
+  const { canchas, turnos_hoy, horarios } = agenda;
   if (!canchas.length) {
     render(el.timeline, html`<tbody><tr><td class="empty-state">No hay canchas activas.</td></tr></tbody>`);
+    ocultar(el.lineaAhora);
     return;
   }
 
+  const ahora = minutosAhora();
   const porSlot = new Map(turnos_hoy.map((t) => [`${t.hora}_${t.cancha_id}`, t]));
-  const proximaHora = turnos_hoy.find((t) => t.hora >= hora_actual)?.hora;
+  // Próximos: los turnos del primer horario que todavía no empezó.
+  const horaProxima = turnos_hoy.find((t) => aMinutos(t.hora) > ahora)?.hora;
 
   const filas = horarios.map((hora) => {
-    const pasado = hora < hora_actual;
-    const claseHora = pasado ? "pasado" : hora === proximaHora ? "activo" : "";
-    return html`<tr>
-      <td class="tl-hora-cell ${claseHora}">${hora}</td>
-      ${canchas.map((c) => celdaTimeline(porSlot.get(`${hora}_${c.id}`), pasado))}
+    const estado = estadoHorario(hora, ahora);
+    const estadoCelda = hora === horaProxima ? "proximo" : estado;
+    return html`<tr data-hora="${hora}" class="tl-fila-${estado}">
+      <td class="tl-hora-cell ${estado}">${hora}</td>
+      ${canchas.map((c) => celdaTimeline(porSlot.get(`${hora}_${c.id}`), estadoCelda))}
     </tr>`;
   });
 
@@ -80,6 +114,27 @@ function renderTimeline({ canchas, turnos_hoy, hora_actual, horarios }) {
       </thead>
       <tbody>${filas}</tbody>`,
   );
+  posicionarLineaAhora();
+}
+
+/** Ubica la línea verde dentro de la fila del horario actual. */
+function posicionarLineaAhora() {
+  const ahora = minutosAhora();
+  const filas = [...el.timeline.tBodies[0]?.rows ?? []].filter((f) => f.dataset.hora);
+  const fila = filas.find((f) => estadoHorario(f.dataset.hora, ahora) === "en-juego");
+
+  if (!fila) {
+    ocultar(el.lineaAhora); // fuera del horario de la agenda
+    return;
+  }
+
+  const fraccion = (ahora - aMinutos(fila.dataset.hora)) / DURACION_TURNO;
+  const wrap = el.lineaAhora.parentElement.getBoundingClientRect();
+  const caja = fila.getBoundingClientRect();
+  el.lineaAhora.style.top = `${caja.top - wrap.top + fraccion * caja.height}px`;
+  // Mismo ancho que la tabla, para que acompañe el desplazamiento lateral en celulares.
+  el.lineaAhora.style.width = `${el.timeline.offsetWidth}px`;
+  mostrar(el.lineaAhora);
 }
 
 function renderManana(turnos) {
@@ -113,7 +168,9 @@ export function init() {
     proximo: byId("home-proximo"),
     timeline: byId("home-timeline"),
     manana: byId("home-manana"),
+    lineaAhora: byId("tl-ahora"),
   };
+  window.addEventListener("resize", () => agenda && posicionarLineaAhora());
 }
 
 export async function mount() {
@@ -125,7 +182,8 @@ export async function mount() {
     const data = await api.home();
     renderStats(data);
     renderProximo(data.proximo);
-    renderTimeline(data);
+    agenda = data;
+    renderTimeline();
     renderManana(data.turnos_manana);
   } catch (error) {
     notificar("error", `No se pudo cargar el inicio: ${error.message}`);
